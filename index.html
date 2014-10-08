@@ -1,0 +1,979 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<meta content="yes" name="apple-mobile-web-app-capable" />
+	<meta content="telephone=no" name="format-detection" />
+	<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+	<meta content="telephone=no" name="format-detection" />
+	<meta name="x5-page-mode" content="app"> 	
+	<meta content="email=no" name="format-detection" />		
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="full-screen" content="true">
+	<meta name="renderer" content="webkit">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-fullscreen" content="true"> 
+    <meta name="360-fullscreen" content="true">	
+	<meta name="msapplication-tap-highlight" content="no" />
+	<title>玉兔寻宝</title>
+	<style type="text/css">
+		*{
+			box-sizing:border-box;
+			box-sizing:border-box;
+			-webkit-box-sizing:border-box;
+			-moz-box-sizing:border-box;
+			word-wrap:break-word;		
+			-webkit-tap-highlight-color:rgba(255,0,0,0);			
+		}
+		html{    
+			-ms-text-size-adjust:100%;
+			-webkit-text-size-adjust:100%;
+		}			
+		html,body{height:100%;overflow:hidden}	
+		body,section,h3,p{margin:0}
+		body{
+			font-size:100%;
+			font-family: Microsoft YaHei, sans-serif, Microsoft JhengHei,Arial;
+			background:#000;
+		}	
+
+		/*************loading加载页面******************/
+		#loadingpage,#gamecontainer,#guidecontainer{
+			width:100%;
+			height:100%;
+		}
+		#loadingpage{
+			background: url(img/bg.png) no-repeat bottom,#7bc0cf;
+			background-size: 100% auto;
+			overflow: hidden;		
+		}
+
+		.loading_title{
+			color: rgb(255, 214, 0);
+			width: 100%;
+			text-align: center;
+			margin-top: 20%;
+			font-size: 2em;
+			font-weight: bold;
+			letter-spacing: 5px;
+			text-shadow: 0 3px 8px rgba(156, 82, 82, 0.6);		
+		}
+		.author, .loadingtip {
+			text-align: center;
+			color: #fff;
+			text-shadow: 0 2px 4px rgba(0,0,0,.2);
+			font-size: 1em;
+		}
+		
+		/*loading加载*/
+		#loadinglogo{
+			width:50px;
+			height:auto;
+			margin:50px auto 40px;
+			display:block;
+			-webkit-animation:bounce-role  2s ease-out infinite;
+			-moz-animation:bounce-role  2s ease-out infinite;
+			animation:bounce-role  2s ease-out infinite;
+		}
+		@-webkit-keyframes bounce-role {
+			0%, 25%, 50%, 75%, 100% {
+				-webkit-transform:translateY(0);
+				-webkit-animation-timing-function:ease-out
+			}
+			12.5% {
+				-webkit-transform:translateY(-30px);
+				-webkit-animation-timing-function:ease-in
+			}
+			37.5% {
+				-webkit-transform:translateY(-24px);
+				-webkit-animation-timing-function:ease-in
+			}
+			62.5% {
+				-webkit-transform:translateY(-18px);
+				-webkit-animation-timing-function:ease-in
+			}
+			87.5% {
+				-webkit-transform:translateY(-6px);
+				-webkit-animation-timing-function:ease-in
+			}
+		}
+		
+		@-moz-keyframes bounce-role {
+			0%, 25%, 50%, 75%, 100% {
+				-webkit-transform:translateY(0);
+				-webkit-animation-timing-function:ease-out
+			}
+			12.5% {
+				-webkit-transform:translateY(-30px);
+				-webkit-animation-timing-function:ease-in
+			}
+			37.5% {
+				-webkit-transform:translateY(-24px);
+				-webkit-animation-timing-function:ease-in
+			}
+			62.5% {
+				-webkit-transform:translateY(-18px);
+				-webkit-animation-timing-function:ease-in
+			}
+			87.5% {
+				-webkit-transform:translateY(-6px);
+				-webkit-animation-timing-function:ease-in
+			}
+		}
+		@keyframes bounce-role {
+			0%, 25%, 50%, 75%, 100% {
+				-webkit-transform:translateY(0);
+				-webkit-animation-timing-function:ease-out
+			}
+			12.5% {
+				-webkit-transform:translateY(-30px);
+				-webkit-animation-timing-function:ease-in
+			}
+			37.5% {
+				-webkit-transform:translateY(-24px);
+				-webkit-animation-timing-function:ease-in
+			}
+			62.5% {
+				-webkit-transform:translateY(-18px);
+				-webkit-animation-timing-function:ease-in
+			}
+			87.5% {
+				-webkit-transform:translateY(-6px);
+				-webkit-animation-timing-function:ease-in
+			}
+		}		
+		
+		/*****************引导指示**********************/
+		#guidecontainer{
+			background:url(img/startbg.png) rgba(0,0,0,.6) center 45% no-repeat;
+			background-size: 219px 369px;
+			position:absolute;
+			z-index:200;
+			top:0;
+			bottom:0;
+			left:0;
+			display:none;
+			
+		}
+		
+		/*********背景音乐*******/
+		#audio{
+			height:0;
+			display:none;
+		}
+		/**************游戏舞台部分**************/
+		#gamecontainer{
+			text-align:center;
+			background:#000;
+			position:relative;
+			margin:0 auto;
+			max-width:640px;
+		}
+		#scoretip{
+			background: url(img/scorebg.png) no-repeat;
+			background-size: 100%;
+			color: #FFF;
+			font-style: italic;
+			font-weight: 700;
+			height: 32px;
+			letter-spacing: 2px;
+			padding: 7px 10px;
+			position: absolute;
+			right: 10px;
+			text-align: right;
+			text-shadow: 1.5px 0 0 #613209,-1.5px 0 0 #613209,0 1px 0 #613209,0 -1.5px 0 #613209,1px 1px 0 #613209,-1px 1px 0 #613209,1px -1px 0 #613209,-1px -1px 0 #613209;
+			top: 20px;
+			width: 105px;
+			z-index: 100;			
+		}
+		#heart{
+			background: url(img/heart.png) no-repeat;
+			background-size: 100%;
+			height: 26px;
+			left: 2px;
+			position: absolute;
+			top: 2px;
+			width: 26px;
+			z-index: 1009;
+		}
+		.hotheart{
+			-webkit-animation:fire .2s linear;
+			-moz-animation:fire .2s linear;
+			animation:fire .2s linear;
+		}
+		@-webkit-keyframes fire {
+			0% {
+				opacity: 1;
+				-webkit-transform: scale(1.1);
+				transform: scale(1.1)
+			}
+
+			100% {
+				opacity: 0;
+				-webkit-transform: scale(3.0);
+				transform: scale(3.0)
+			}
+		}	
+		@-moz-keyframes fire {
+			0% {
+				opacity: 1;
+				-moz-transform: scale(1.1);
+				transform: scale(1.1)
+			}
+
+			100% {
+				opacity: 0;
+				-moz-transform: scale(3.0);
+				transform: scale(3.0)
+			}
+		}	
+		@keyframes fire {
+			0% {
+				opacity: 1;
+				transform: scale(1.1)
+			}
+
+			100% {
+				opacity: 0;
+				transform: scale(3.0)
+			}
+		}	
+
+		/****************游戏结束************************/	
+		#gameover,#gameresult{
+			width:100%;
+			height:100%;
+			overflow:hidden;
+			position:absolute;
+			top:0;
+			bottom:0;
+		}
+		#gameover{
+			background:url(img/gameover.png) rgba(0,0,0,.3) center center no-repeat;
+			background-size: 230px 260px;
+			display:none;
+			z-index:150;		
+		}
+		
+		/*游戏结果*/
+		#gameresult{
+			z-index:500;
+			background:url(img/endpage.jpg) rgba(0,0,0,.6) center center no-repeat;
+			background-size:cover;
+			text-align:left;
+			display:none;
+		}
+		#replay{
+			background: url(img/replay.png) 0 0 no-repeat;
+			display:inline-block;
+			height: 36px;
+			line-height: 36px;
+			width: 86px;
+			margin:20px 0 0 20px;
+		}
+		.sharewarp{
+			width:100%;
+			text-align:center;
+			margin-top:20%;
+		}
+		#sharebutton{
+			display:inline-block;
+			background:#E8722C;
+			font-weight:blod;
+			color:#fff;
+			text-decoration:none;
+			font-size:1em;
+			font-weight:bold;
+			line-height:2.8em;
+			-webkit-border-radius:7px;
+			-moz-border-radius:7px;
+			border-radius:7px;
+			padding:0 15px;
+		}
+		#suclog{
+			width:100%;
+			height:65px;
+			margin-top:30px;
+		}
+		.yihan{
+			background:url(img/yinhen.png) no-repeat center;
+		}
+		.good{
+			background:url(img/geili.png) no-repeat center;
+		}
+		#scorecontent{
+			width:100%;
+			margin-top:25px;
+			color:#fff;
+			text-align:center;
+			font-weight:bold;
+			font-size:1.1em;
+			padding:0 30px;
+		}
+		.lighttext{
+			color:#F6DE0A;
+		}
+		/***************分享提示****************/
+		#share{
+			position: absolute;
+			z-index: 9999999;
+			top: 0;
+			bottom: 0;
+			right: 0;
+			width: 100%;
+			height:100%;
+			overflow:hidden;
+			background: rgba(0,0,0,.5);
+			display: none;			
+		}
+		#share img{
+			width:100%;
+		}
+		
+		/*视口查询*/
+		@media only screen and (min-width:350px){
+			#loadinglogo{
+				margin:90px auto 70px;
+			
+			}
+		}
+	</style>
+</head>
+<body>
+	<section id="loadingpage">
+		<h3 class="loading_title">HTML5小游戏</h3>
+		<br />
+		<p class="author">作者: pingfan @ 工作室</p>
+		<img src="img/loading.png" alt="loading" id="loadinglogo">
+		<p class="loadingtip">亲!正在为您努力加载，请耐心等待……</p>
+	</section>
+	
+	<section id='guidecontainer'></section>
+	
+	<section id='gamecontainer'>
+		<audio src="sound/game.mp3" loop id='audio'>您的浏览器不支持audio，请选用现代浏览器。</audio>
+		
+		<div id="scoretip">
+			<div id="heart"></div>
+            <span id="score">0</span>
+		</div>
+		<!--canvas元素的使用与普通的html元素并不相同，它有一个默认尺寸300*150，在css中设置宽高只能改变canvas的显示宽高，而并没有改变画布绘制时的尺寸，所以要为canvas设置绘制的尺寸，必须写在元素标签上-->
+		<canvas id='stage' width='480px' height='640px'>您的浏览器不支持canvas，请选用现代浏览器。</canvas>
+	    <!--gameover-->
+		<section id='gameover'></section>
+		
+		<!--gameresult-->
+		<section id='gameresult'>
+			<a href="javascript:;" id='replay'></a>
+			<div id='suclog' ></div>
+			<p id='scorecontent'>真遗憾，您竟然<span class='lighttext'>一个</span>月饼都没有捞到！</p>
+			<section class='sharewarp'>
+				<a href="javascript:;" id='sharebutton'>分享给大家一起玩，GO！</a>
+			</section>
+		</section>
+	</section>
+	
+
+	
+	<!--gameshare-->
+	<div id='share'>
+		 <img src="img/guidetofollow.png" >
+	</div>
+	<script type="text/javascript">
+		/*
+			@author pingfan
+			pingfan命名空间
+		*/
+		var pingfan=function(){
+			return{
+				$$:function(id){
+					return (!id) ? null :  document.getElementById(id);
+				},
+				//参数url对象post的地址，param为传的参数 格式例 "fname=bill&lname=gates"	
+				hostPost:function(url,param,callback){
+					var xmlhttp;
+					if (window.XMLHttpRequest){
+					  xmlhttp=new XMLHttpRequest();
+					  }
+					else{
+					  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+					  }
+					xmlhttp.onreadystatechange=function()
+					  {
+						  if(xmlhttp.readyState==4){
+						  
+							  if (xmlhttp.status==0 || xmlhttp.status==200)
+								{				
+									if(callback){
+										callback(xmlhttp.responseText);					
+									}
+
+								}else{
+									alert('请求歌词出错，请刷新浏览器')
+								}
+						  }
+					  }	
+					xmlhttp.open("POST",url,true);
+					xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded"); 
+					xmlhttp.send(param);		
+				},
+				//阻止默认行为
+				stopDefault:function(e){
+					var e=e || window.event;
+					if(e.preventDefault){
+						e.preventDefault();
+					}else{
+						e.returnValue=false;
+					}			
+				},
+				addClass:function(element,value){
+					if(!element.className) {
+						element.className = value;
+						} else {
+						var newClassName = element.className;
+						newClassName += " ";
+						newClassName += value;
+						element.className = newClassName;
+					}				
+				},
+				removeClass:function(obj,cn) {
+					return obj.className = obj.className.replace(new RegExp("\\b"+cn+"\\b"),"");
+					//同样，多个className之间的多个空格也会被视为一个
+				},
+				getIndex:function(elem,arr){
+					arr=arr || [];
+					for(var i=0,len=arr.length;i<len;i++){		
+						if(arr[i]==elem){
+								return i;
+						}
+					}
+				},
+				tab:function(elem,classname,callback1,callback2){
+					var elem=elem || [];
+					for(var i=elem.length;i--;){
+						elem[i].onclick=function(e){
+							var element=e.target ? e.target : e.srcElement;	
+							for(var j=elem.length;j--;){
+								elem[j].className='';
+							}
+							element.className=classname;
+							var id=pingfan.getIndex(element,elem);
+							if(id==0 && callback1){
+								callback1();
+							}
+							if(id==1 && callback2){
+								callback2();
+							}
+						}
+					}
+				},
+				getUrlParam:function(name){
+					var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+					var r = window.location.search.substr(1).match(reg);
+					if (r!=null) return unescape(r[2]); return null;
+				},
+				//移动端没有hover鼠标伪类，js模拟hover
+				hover:function(elem,className){
+					var elem=elem || [];
+					for(var i=elem.length;i--;){
+						elem[i].addEventListener('touchstart',function(){this.className=className;},false);
+						elem[i].addEventListener('touchend',function(){this.className='';},false);
+					}
+				},
+				isWeiXin:function(){  
+					var ua = window.navigator.userAgent.toLowerCase();  
+					if(ua.match(/MicroMessenger/i) == 'micromessenger'){  
+						return true;  
+					}else{  
+					   return false;  
+					}  
+				},
+				toDouble:function(num){
+					num>=10 ? num=''+num : num='0'+num ;
+							return num;
+				},
+				daoTimer:function(year,month,day,hour, minute,seconds,elem){               
+							var hour=hour || 0,
+								minute=minute || 0,
+								seconds=seconds || 0;                                
+							var endTime=new Date();                              
+									endTime.setFullYear(parseInt(year)),                               
+									endTime.setMonth(parseInt(month)-1),                             
+									endTime.setDate(parseInt(day)),                          
+									endTime.setHours(parseInt(hour)),                           
+									endTime.setMinutes(parseInt(minute)),                           
+									endTime.setSeconds(parseInt(seconds));      
+							setTime();
+							setInterval(function(){
+									setTime()
+							},1000);        
+							function setTime(){                                                
+									var startTime=new Date();
+									if(endTime.getTime()-startTime.getTime()<0){
+										var lengthTime=parseInt((startTime.getTime()-endTime.getTime())/1000);
+									}else{
+										var lengthTime=parseInt((endTime.getTime()-startTime.getTime())/1000);
+									}
+									var     lSeconds=parseInt(lengthTime % 60),                                
+											lMinute=parseInt((lengthTime/60)%60),         
+											lHour=Math.floor((lengthTime/3600)%24),
+											lDay=Math.floor(lengthTime/(24*3600));
+									if(endTime.getTime()-startTime.getTime()<0){		
+										elem.innerHTML='2014年国庆节已过去'+lDay+'天'+pingfan.toDouble(lHour)+'小时'+pingfan.toDouble(lMinute)+'分钟'+pingfan.toDouble(lSeconds)+'秒';									
+									}else{
+										elem.innerHTML='离2014年国庆节还有'+lDay+'天'+pingfan.toDouble(lHour)+'小时'+pingfan.toDouble(lMinute)+'分钟'+pingfan.toDouble(lSeconds)+'秒';
+									}
+							}
+							
+				},
+				loadImages:function(sources,callback){
+					var count=0,
+					images={},
+					imgNum=0;
+					sources=sources || [];
+					for(src in sources){
+						images[src]=new Image();
+						images[src].onload=function(){
+							if(++count >= imgNum){
+								callback(images);
+							}
+						}
+						images[src].src=sources[src];
+					}			
+				},
+				loading:function(callback){
+					if(typeof document.onreadystatechange != "undefined"){
+						document.addEventListener('readystatechange',function(){
+							callback();						
+						},false)
+					}else{
+						window.addEventListener('load',function(){
+							callback();
+						},false)
+					}
+				},
+				timeAll:function(elem){
+					if(elem){
+					
+						elem.currentTime !=0 ? elem.duration : 0;
+					}
+				},
+				oneTime:function(elem,type,callback){
+					elem.addEventListener('type',function(e){
+						//移除事件
+						e.target.removeEventListener(e.type,arguments.callee);
+						//返回回调函数
+						return callback(e);
+					},false)
+				},
+				//获取宽度和高度
+				getWH:function(elem){
+					elem.width=window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+					elem.height=window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+					elem.width>640 ? elem.width=640 : '';
+				},
+				isMobile:function(){
+					var sUserAgent= navigator.userAgent.toLowerCase(),
+					bIsIpad= sUserAgent.match(/ipad/i) == "ipad",
+					bIsIphoneOs= sUserAgent.match(/iphone os/i) == "iphone os",
+					bIsMidp= sUserAgent.match(/midp/i) == "midp",
+					bIsUc7= sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4",
+					bIsUc= sUserAgent.match(/ucweb/i) == "ucweb",
+					bIsAndroid= sUserAgent.match(/android/i) == "android",
+					bIsCE= sUserAgent.match(/windows ce/i) == "windows ce",
+					bIsWM= sUserAgent.match(/windows mobile/i) == "windows mobile",
+					bIsWebview = sUserAgent.match(/webview/i) == "webview";
+					return (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM);				
+				}
+			}
+		}();
+			
+		window.addEventListener('load', function(){
+		   setTimeout(function(){ window.scrollTo(0, 1); }, 100);
+		});		
+
+		/**进行适配移动端还是手机端事件**/
+		var touchStart,touchMove,touchEnd;
+		touchStart = pingfan.isMobile() ? 'touchstart' : 'mousedown';
+		touchMove = pingfan.isMobile() ? 'touchmove' : 'mousemove';
+		touchEnd =  pingfan.isMobile() ? 'touchend' : 'mouseup';
+
+		/**loading加载**/
+		var loadingpage=pingfan.$$('loadingpage'),
+			guidecontainer=pingfan.$$('guidecontainer'),
+			gamecontainer=pingfan.$$('gamecontainer'),
+			sharebutton=pingfan.$$('sharebutton'),
+			audio=pingfan.$$('audio'),
+			stage=pingfan.$$('stage');
+		pingfan.loading(function(){
+			setTimeout(function(){
+				
+				loadingpage.style.display='none',
+				guidecontainer.style.display='block',
+				gamecontainer.style.display='block';
+				
+				//由于浏览器设置全屏，会导致画布获取过小，则重新获取
+				stage.height=window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+				
+				//驱动方法
+				gameMonitor.init();
+				
+				/*window.addEventListener('resize',function(){
+					pingfan.getWH(stage);
+					gameMonitor.init();
+				},false);*/
+				
+			},3000);
+		});
+	
+		/***游戏画布部分***/
+		var heart=pingfan.$$('heart'),
+			score=pingfan.$$('score'),
+			gameover=pingfan.$$('gameover'),
+			gameresult=pingfan.$$('gameresult'),
+			replay=pingfan.$$('replay'),
+			share=pingfan.$$('share'),
+			scorecontent=pingfan.$$('scorecontent'),
+			suclog=pingfan.$$('suclog');
+			window.shareData={};//微信分享声明
+			pingfan.getWH(stage);
+		//效果最好的动画方法兼容写法	
+		window.RAF = (function(){
+			return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback) {window.setTimeout(callback, 1000 / 60); };
+        })();	
+			
+		//Ship飞船
+		function Ship(cxt){
+			this.width=60,
+			this.height=60,
+			this.top=stage.height-this.height-16,
+			this.left=stage.width/2-this.width/2;
+			this.loading=false,
+			this.loadimages={};
+			var player=new Image();
+			this.paint = function(){
+				var _this=this;
+				this.player=player;
+				player.addEventListener('load',function(){
+					cxt.drawImage(player, _this.left, _this.top, _this.width, _this.height);
+				},false);
+				player.src='img/player.png';
+				
+			},
+			//换用chongpaint相当于做图片延迟加载器
+			this.chongpaint=function(){
+				cxt.drawImage(this.player, this.left, this.top, this.width, this.height);
+			},
+			//设置位置
+			this.setPosition=function(event){
+				if(pingfan.isMobile()){
+					var tarL = event.changedTouches[0].clientX;
+					var tarT = event.changedTouches[0].clientY;
+				}else{
+					var tarL = event.offsetX;
+					var tarT = event.offsetY;
+				}
+				this.left = tarL - this.width/2 - 16;
+				this.top = tarT - this.height/2;
+				if(this.left<0){
+					this.left = 0;
+				}
+				if(this.left>stage.width-this.width){
+					this.left = stage.width-this.width;
+				}
+				if(this.top<0){
+					this.top = 0;
+				}
+				if(this.top>stage.height - this.height){
+					this.top = stage.height - this.height;
+				}
+				//cxt.clearRect(0,0,stage.width,stage.height);
+				this.chongpaint();			
+			},
+			
+			//事件控制
+			this.controll=function(){
+				var currentX = this.left,
+					currentY = this.top,
+			        _this=this,move = false;;
+				stage.addEventListener(touchStart,function(event){
+			    	//event.preventDefault();
+					_this.setPosition(event);
+					move=true;
+				},false);	
+				stage.addEventListener(touchEnd,function(){
+					move=false;
+				},false);	
+				stage.addEventListener(touchMove,function(event){
+					event.preventDefault();
+					if(move){
+					 _this.setPosition(event);
+					}
+				},false);					
+			},
+			
+			//吃的方法
+			this.eat=function(fallList){
+				for(var i=fallList.length;i--;){
+					var f = fallList[i];
+					if(f){
+						var a=this.top+this.height/2 - (f.top+f.height/2),
+							b=this.left+this.width/2- (f.left+f.width/2),
+							average=Math.sqrt(a*a+b*b);
+						//出现碰撞	
+						if(average<=(this.height/2+f.height/2)){
+						
+							fallList[f.id] = null;
+							if(f.type==0){
+								console.log(1);
+								gameMonitor.stop();
+								fallList[f.id] = null;
+							}else{
+								score.innerHTML=++gameMonitor.score;
+								pingfan.addClass(heart,'hotheart');
+								setTimeout(function() {
+									pingfan.removeClass(heart,'hotheart');
+								}, 200);
+							}
+						}	
+					}
+				}
+			}
+		}		
+		
+		//滚石下落
+		function Fallingstone(type, left, id){
+			this.speedUpTime = 2000;
+			this.id = id;
+			this.type = type;
+			this.width = 50;
+			this.height = 50;
+			this.left = left;	
+			this.top = -50;	
+			this.speed = 0.01 * Math.pow(1.1, Math.floor(gameMonitor.time/this.speedUpTime));
+			this.loop = 0;
+			var p = this.type == 0 ? 'img/food1.png' : 'img/food2.png',			
+			    pic=new Image();
+				pic.src=p;
+			this.pic=pic;
+		}
+		
+		Fallingstone.prototype={
+			constructor:Fallingstone,
+			paint:function(cxt){
+				cxt.drawImage(this.pic, this.left, this.top, this.width, this.height);
+			},
+			move:function(cxt){
+				if(gameMonitor.time % this.speedUpTime == 0){
+					this.speed *= 0.8;
+				}
+				this.top += ++this.loop * this.speed;
+				if(this.top>gameMonitor.bgheight){
+					gameMonitor.fallList[this.id] = null;
+				}
+				else{
+					this.paint(cxt);
+				}			
+			}
+		}
+				
+		//gameMonitor游戏场景
+		var gameMonitor={
+			bgwidth:stage.width,
+			bgheight:stage.height,
+			time : 0,
+			timmer : null,	
+			bgSpeed : 2,//移动增长值
+			bgloop : 0,	
+			bgDistance : 0,//背景位置,
+			fallList : [],
+			score:0,
+			initStart:true,
+			init:function(){
+				var cxt=stage.getContext('2d');
+				var bg=new Image(),_this=this;
+				this.bg = bg;
+				
+				//图片加载成功，绘画背景
+				bg.addEventListener('load',function(){
+					cxt.drawImage(bg,0,0,stage.width,stage.height);
+				},false);
+				bg.src='img/bg.jpg';
+				this.initListener(cxt);
+			},
+			initListener:function(cxt){
+				var _this=this;
+				
+				//隐藏指示，开始
+				guidecontainer.addEventListener(touchStart,function(){
+					audio.play();
+					guidecontainer.style.display='none';
+					_this.ship=new Ship(cxt);
+					_this.ship.paint();
+					_this.ship.controll();
+					_this.reset();
+					_this.run(cxt);
+				},false);
+				
+				//再来一次
+				replay.addEventListener(touchStart,function(){
+					audio.play();
+					gameresult.style.display='none';
+					_this.ship=new Ship(cxt);
+					_this.ship.paint();
+					_this.ship.controll();
+					_this.reset();
+					_this.run(cxt);	
+				},false);
+				
+				sharebutton.addEventListener(touchStart,function(){
+					if(pingfan.isWeiXin())share.style.display='block';
+					//share.style.display='block';
+				},false)
+				share.addEventListener(touchStart,function(){
+					share.style.display='none';
+				},false);
+				
+			},
+			//动态背景
+			rollBg : function(cxt){
+				if(this.bgDistance>=this.bgheight){
+					this.bgloop = 0;
+				}
+				this.bgDistance = ++this.bgloop * this.bgSpeed;
+				cxt.drawImage(this.bg, 0, this.bgDistance-this.bgheight, this.bgwidth, this.bgheight);
+				cxt.drawImage(this.bg, 0, this.bgDistance, this.bgwidth, this.bgheight);
+			},
+			run:function(cxt){
+				var _this=this;
+				cxt.clearRect(0,0,_this.bgwidth,_this.bgheight);		
+				_this.rollBg(cxt);
+										
+				//绘制飞船
+				_this.ship.chongpaint();
+				
+				_this.ship.eat(_this.fallList);
+				//console.log(_this.fallList);
+				//产生月饼
+				_this.genorateFall();
+
+				//绘制月饼
+				for(i=_this.fallList.length-1; i>=0; i--){
+					var f = _this.fallList[i];
+					if(f){
+						f.paint(cxt);
+						f.move(cxt);
+					}
+					
+				}				
+				
+				if(_this.initStart)_this.timmer = RAF(function(){_this.run(cxt);});
+				_this.time++;					
+			},
+			reset:function(){
+				this.fallList = [];
+				this.bgloop = 0;
+				this.score = 0;
+				this.timmer = null;
+				this.time = 0;	
+				this.initStart=true;
+				score.innerHTML=0;				
+			},
+			//生产陨石
+			genorateFall : function(){
+				var genRate = 60; //产生月饼的频率
+				var random = Math.random();
+				if(random*genRate>genRate-1){
+					var left = Math.random()*(this.bgwidth - 60);
+					var type = Math.floor(left)%2 == 0 ? 0 : 1;
+					var id = this.fallList.length;
+					var f = new Fallingstone(type, left, id);
+					this.fallList.push(f);
+				}
+			},
+			stop:function(){
+				audio.pause();
+				var _this = this;
+				console.log(111);
+				gameover.style.display='block';
+				_this.initStart=null;
+				setTimeout(function(){
+					gameover.style.display='none',
+					_this.getScore(),
+					gameresult.style.display='block';
+				},1000);
+				
+			},
+			getScore:function(){
+				var time=Math.floor(this.time/60);
+				if(this.score==0){
+					scorecontent.innerHTML="真遗憾，你既然<span class='lighttext'>一个</span>也没有捞到。";
+					suclog.className='';
+					suclog.className='yihan';			
+					shareData.tContent="你也太菜了吧，你既然一个也没有捞到，你也来试试吧。"
+					return;
+				}else if(this.score<10){
+					scorecontent.innerHTML="您在<span class='lighttext'>"+time+"</span>秒内捞到了<span class='lighttext'>"+this.score+"</span>个宝贝，超过了<span class='lighttext'>2%</span>的用户！";
+					shareData.tContent="我在"+time+"秒内捞到了"+this.score+"个宝贝，超过了2%的用户，敢跟我来比一比吗？"
+				}else if(this.score>=10 && this.score<20){
+					scorecontent.innerHTML="您在<span class='lighttext'>"+time+"</span>秒内捞到了<span class='lighttext'>"+this.score+"</span>个宝贝，超过了<span class='lighttext'>10%</span>的用户！";
+					shareData.tContent="我在"+time+"秒内捞到了"+this.score+"个宝贝，超过了10%的用户，敢跟我来比一比吗？"
+				}else if(this.score>=20 && this.score<40){
+					scorecontent.innerHTML="您在<span class='lighttext'>"+time+"</span>秒内捞到了<span class='lighttext'>"+this.score+"</span>个宝贝，超过了<span class='lighttext'>40%</span>的用户！";
+					shareData.tContent="我在"+time+"秒内捞到了"+this.score+"个宝贝，超过了40%的用户，敢跟我来比一比吗？"
+				}else if(this.score>=40 && this.score<60){
+					scorecontent.innerHTML="您在<span class='lighttext'>"+time+"</span>秒内捞到了<span class='lighttext'>"+this.score+"</span>个宝贝，超过了<span class='lighttext'>60%</span>的用户！";
+					shareData.tContent="我在"+time+"秒内捞到了"+this.score+"个宝贝，超过了60%的用户，敢跟我来比一比吗？"
+				}else if(this.score>=60 && this.score<90){
+					scorecontent.innerHTML="太棒了，您在<span class='lighttext'>"+time+"</span>秒内捞到了<span class='lighttext'>"+this.score+"</span>个宝贝，超过了<span class='lighttext'>80%</span>的用户！";
+					shareData.tContent="太棒了，我在"+time+"秒内捞到了"+this.score+"个宝贝，超过了80%的用户，敢跟我来比一比吗？"
+				}else if(this.score>=90 && this.score<=120){
+					scorecontent.innerHTML="太棒了，您在<span class='lighttext'>"+time+"</span>秒内捞到了<span class='lighttext'>"+this.score+"</span>个宝贝，超过了<span class='lighttext'>90%</span>的用户！";
+					shareData.tContent="太棒了，我在"+time+"秒内捞到了"+this.score+"个宝贝，超过了90%的用户，敢跟我来比一比吗？"
+				}else if(this.score>150){
+					scorecontent.innerHTML="太棒了，您在<span class='lighttext'>"+time+"</span>秒内捞到了<span class='lighttext'>"+this.score+"</span>个宝贝，超过了<span class='lighttext'>99%</span>的用户！";
+					shareData.tContent="太棒了，我在"+time+"秒内捞到了"+this.score+"个，超过了99%的用户，敢跟我来比一比吗？"
+				}
+				suclog.className='';
+				suclog.className='good';	
+			}
+		}
+	
+		/**微信分享**/
+		window.shareData = {
+				"imgUrl": "http://pingfan1990.sinaapp.com/html5/yao/img/logo.png",
+				"timeLineLink": location.href,
+				"tTitle": "玉兔寻宝-国庆作品",
+				"tContent": "玉兔寻宝，带你一起遨游太空，历经艰险，寻找宝藏，好玩的游戏，你敢来挑战！"
+		};
+
+		document.addEventListener("WeixinJSBridgeReady", function () {
+			WeixinJSBridge.on("menu:share:appmessage", function (e) {
+				WeixinJSBridge.invoke("sendAppMessage", {
+					img_url: window.shareData.imgUrl,
+					link: window.shareData.timeLineLink,
+					desc: window.shareData.tContent,
+					title: window.shareData.tTitle
+				}, onShareComplete)
+			});
+			
+
+			WeixinJSBridge.on("menu:share:timeline", function (e) {
+				WeixinJSBridge.invoke("shareTimeline", {
+					img_url: window.shareData.imgUrl,
+					img_width: "640",
+					img_height: "640",
+					link: window.shareData.timeLineLink,
+					desc: window.shareData.tTitle,
+					title: window.shareData.tTitle+"   "+window.shareData.tContent
+				}, onShareComplete)
+			})
+		}, false);
+
+		function onShareComplete(){
+			share.style.display='none';
+		}		
+	</script>
+</body>
+</html>
